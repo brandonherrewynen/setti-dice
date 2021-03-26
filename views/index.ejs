@@ -1,16 +1,36 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>setti-dice</title>
+    <title>setti</title>
     <script src="../../socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="/js/anim.js"></script>
     <link rel="stylesheet" type="text/css" href="/css/site.css">
+    <link rel="icon" href="/images/favicon.ico">
   </head>
   <body>
         <div class="gamecontainer">
-            <canvas>
-
-            </canvas>
+            <div class="content">
+                <section>
+                  <img src="https://images.unsplash.com/photo-1502311526760-ebc5d6cc0183?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=f359ccb441c46d9265b2d27bf25b0391&auto=format&fit=crop&w=562&q=80" alt="Photo by Andy Watkins on Unsplash" height="350px" width="200px" class="image1"
+                  /> </section>
+                <section>
+                  <img src="https://images.unsplash.com/photo-1455245737663-3edc3b61dd1a?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=59b8de4f8d04c0fa7ead62083bfe68bb&auto=format&fit=crop&w=1350&q=80" alt="Photo by Andy Watkins on Unsplash" height="250px" width="300px" class="image2"
+                  />
+                </section>
+                <section>
+                  <img src="https://images.unsplash.com/photo-1468413253725-0d5181091126?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=829ab8c0acb239927481da8cd0c48bd6&auto=format&fit=crop&w=1350&q=80" alt="Photo by Andy Watkins on Unsplash" height="250px" width="300px" class="image3"
+                  />
+                </section>
+                <section>
+                  <img src="https://images.unsplash.com/photo-1421790500381-fc9b5996f343?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=ec2c9a8f8c3f6c867753cc37c1e64886&auto=format&fit=crop&w=634&q=80" alt="Photo by Andy Watkins on Unsplash" height="300px" width="250px" class="image4"
+                  />
+                </section>
+                <section> <img src="https://images.unsplash.com/photo-1481402665672-0a280f0e9845?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=ecc068e10b08cacbee54845e8e07c1d4&auto=format&fit=crop&w=1353&q=80" alt="Photo by Andy Watkins on Unsplash" height="250px" width="300px"
+                    class="image5" /> </section>
+                <section> <img src="https://images.unsplash.com/photo-1453791052107-5c843da62d97?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=c69a546f8ae2bab8f8e605d58fa3ed67&auto=format&fit=crop&w=1350&q=80" alt="Photo by Andy Watkins on Unsplash" height="250px" width="300px"
+                    class="image6" /> </section>
+              </div>
         </div>
         <div class="chatcontainer">
             <ul id="messages"></ul>
@@ -20,7 +40,7 @@
         </div>
         <script>
                 var socket = io.connect();
-                var username = "notassigned"
+                var username = "notassigned";
                 // submit text message without reload/refresh the page
                 $('form').submit(function(e){
                     e.preventDefault(); // prevents page reloading
@@ -43,9 +63,7 @@
                 socket.on('is_online', function(username) {
                     $('#messages').append($('<li>').html(username));
                 });
-                // ask username
-                //var username = username;//prompt('Please tell me your name');
-                socket.emit('username', username);
+                //socket.emit('username', username);
         </script>
   </body>
 </html>
