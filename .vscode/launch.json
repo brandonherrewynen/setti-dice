@@ -5,10 +5,11 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "command": "node index.js",
+            "command": "nodemon index.js",
             "name": "Run",
             "request": "launch",
             "type": "node-terminal"
         }
+        
     ]
 }
