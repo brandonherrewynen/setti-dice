@@ -5,7 +5,6 @@
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <script src="../../socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <script src="/js/anim.js"></script>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/css/site.css">
@@ -25,7 +24,7 @@
             </form>
         </div>
         <script>
-                var socket = io.connect();
+                var socket = io.connect({transports: ['websocket']});
                 var username = "notassigned";
                 // submit text message without reload/refresh the page
                 $('form').submit(function(e){
