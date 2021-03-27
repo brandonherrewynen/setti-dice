@@ -24,7 +24,7 @@
             </form>
         </div>
         <script>
-                var socket = io.connect({transports: ['websocket']});
+                var socket = io.connect();
                 var username = "notassigned";
                 // submit text message without reload/refresh the page
                 $('form').submit(function(e){
