@@ -1,4 +1,5 @@
 * { 
+    font-family: 'Raleway', sans-serif;
     margin: 0; 
     padding: 0; 
     /* box-sizing: border-box;  */
@@ -6,7 +7,7 @@
 
 body { 
     font: 14px Helvetica, Arial; 
-    overflow: hidden;
+    /* overflow: hidden; */
 }
         
 form { 
@@ -26,9 +27,10 @@ form input {
 }
         
 form button { 
-    width: 64px; 
+    width: 3%; 
+    height: 34px;
     background: rgb(255, 194, 81); 
-    border: none; padding: 10px; 
+    border: none; padding: 6px; 
     border-radius: 8px;
     margin-left: 4px; 
 }
@@ -62,20 +64,11 @@ ul {
     }
   }
 
-.lightbox {
-    position:fixed;
-    background-color: #000;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    z-index:1000;
-}
-
 .gamecontainer {
     width:75%;
     float:left;
     text-align:left;
+    position: fixed;
 }
 
 .chatcontainer {
@@ -83,14 +76,16 @@ ul {
     display: table-column;
     min-height: 100%;
     width:25%;
-    float:left;
+    float:right;
     text-align:left;
     background-color: rgb(224, 223, 223);
 }
+
 #messages { 
     list-style-type: none; 
     margin: 0; 
     padding: 0; 
+    /* overflow-y: auto; */
 }
         
 #messages li { 
@@ -99,4 +94,20 @@ ul {
         
 #messages li:nth-child(odd) { 
     background: #eee; 
+}
+
+    @media only screen and (max-width: 600px) {
+    .gamecontainer {
+        width:30%;
+        text-align:left;
+    }
+    .chatcontainer {
+        width:70%;
+    }        
+    form input { 
+      width: 38%; 
+    }
+    form button { 
+      width: 23%; 
+    }
 }

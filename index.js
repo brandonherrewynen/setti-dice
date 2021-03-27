@@ -4,6 +4,7 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const storage = require('node-persist');
 const path = require('path');
+const dice = require('./dice');
 app.use(express.static(path.join(__dirname, '/public')));
 
 async function initStorage() {
@@ -20,6 +21,8 @@ async function initStorage() {
         forgiveParseErrors: false
     });
 }
+
+var i = dice.DiceRound();
 
 app.get('/', function(req, res) {
     res.render('index.ejs');
