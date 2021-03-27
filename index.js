@@ -6,8 +6,6 @@ const path = require('path');
 const dice = require('./dice');
 app.use(express.static(path.join(__dirname, '/public')));
 
-var i = dice.DiceRound();
-
 app.get('/', function(req, res) {
     res.render('index.ejs');
 });
@@ -22,6 +20,7 @@ io.sockets.on('connection', function(socket) {
     socket.on('disconnect', function() { io.emit('is_online', '🔴 <i>' + socket.username + ' left the chat.</i>'); })
     socket.on('chat_message', function(message) { 
         io.emit('chat_message', '<strong>' + socket.username + '</strong>: ' + message);
+        io.emit('chat_message', dice.DiceRound());
         // socket.then(async function(result) {
         //     console.log(result);
         // })
