@@ -46,19 +46,19 @@ ul {
     width:75%;
     float:left;
     position: fixed;
+    height: 100%;
 }
 
 .chatcontainer {
-    height: 100vh;
-    min-height: 100vh;
     text-align:left;
     background-color: rgb(224, 223, 223);
     position: fixed;
+    height: 100%;
     right: 0;
 } 
 
 .content {
-    height: 100vh;
+    height: 100%;
     justify-content: center;
     display: flex;
     align-items: center;
