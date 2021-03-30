@@ -4,6 +4,7 @@
     <title>setti - live</title>
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#f3de68" >
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/css/site.css">
@@ -24,7 +25,7 @@
             </div>
             <ul id="messages"></ul>
             <form action="/" method="POST" id="chatForm">
-                <input id="txt" autocomplete="off" autofocus="on" oninput="isTyping()" placeholder="type your message here..." /><button class="">Send</button>
+                <input id="txt" autocomplete="off" autofocus="on" oninput="isTyping()" /><button class="">Send</button>
             </form>
         </div>
     </div>
@@ -35,20 +36,45 @@
             var socket = io.connect()
             var username = "guest"
             var guestCount = 0
+            var re = /[a-zA-Z0-9~!@#$%^&*()`\[\]{};':,./<>?| ]*/
+
+            function truncate(str, n){
+                return (str.length > n) ? str.substr(0, n-1) + '&hellip;' : str;
+            };
 
             $('form').submit(function(e){
-                if (username == "guest") {
-                    username = $('#txt').val()
+                let temp = $('#txt').val()
+                if (re.test(temp) == true) {
                     $('#txt').val('')
-                    socket.emit('username', username)
-                } else if ($('#txt').val() == "") {
+                    if (username == "guest") {
+                        if (temp.length > 14) {
+                            $('#messages').append($('<li class="consolemessages">').html("keep username < 14"))
+                            scroll()
+                        }
+                        else if (temp == "") {
+                        } else {
+                            username = truncate(temp, 20)
+                            socket.emit('username', username)
+                        }
+                        return false
+                    } 
+                    if (temp.length > 140) {
+                        $('#messages').append($('<li class="consolemessages">').html("keep messages shorter"))
+                    } else {
+                        socket.emit('chat_message', temp)
+                    }
+                    return false
                 } else {
-                    socket.emit('chat_message', $('#txt').val())
-                    $('#txt').val('')
+                    $('#messages').append($('<li class="consolemessages">').html("regex failed"))
                 }
-                return false
+                
             })
             socket.on('connect', function () {
+                if (username == "guest") {
+                    $('#txt').attr("placeholder", 'type username...')
+                } else {
+                    $('#txt').attr("placeholder", "type your message here...")
+                }
                 socket.emit('userlist')
             })
             socket.on('userlistCall', function(userlist, guestCount) {
@@ -75,15 +101,16 @@
             })
             socket.on('load_previous_chat', (msg) => {
                 $('#messages').append($('<li>').html(msg))
-                scroll()
+                scrollOnce()
             })
             socket.on('disconnect', (username) => {
                 $('#userlist').remove($('<li>').html(username))
             })
-            function scroll(){
-                scroll = function(){}; // kill it as soon as it was called
+            function scrollOnce(){
+                scrollOnce = function(){}; // kill it as soon as it was called
                 $("#messages").animate({ scrollTop: 200000 })
             }
+            function scroll(){$("#messages").animate({ scrollTop: 200000 })}
         </script>
   </body>
 </html>
