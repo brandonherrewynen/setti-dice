@@ -18,9 +18,10 @@ app.get('/', function(req, res) {
 })
 
 io.sockets.on('connection', function(socket) {
-    console.log('connection')
-    console.log("socketid = " + socket.socketID)
-    console.log("socketid = " + socket.ID)
+    console.log('connection recieved')
+    socket.on('pong', function(data){
+        console.log("Pong received from client");
+    });
     socket.on('refreshMessages', function(socketID) {
         pullChat(socketID)
     })
@@ -40,6 +41,7 @@ io.sockets.on('connection', function(socket) {
             guestCount++
         else
             isOnline.push(socket.username)
+        console.log(guestCount)
         io.emit('userlistCall', isOnline, guestCount)
     })
 
@@ -56,7 +58,6 @@ io.sockets.on('connection', function(socket) {
 
     socket.on('chat_message', function(message) { 
         mongo.logMessage(socket.username, message)
-        // pullChat()
         io.emit('chat_message', '<strong>' + socket.username + '</strong>: ' + message)
         //io.emit('chat_message', dice.DiceRound())
     })
@@ -66,6 +67,8 @@ io.sockets.on('connection', function(socket) {
     })
 
 })
+
+setTimeout(sendHeartbeat, 90000);
 
 const server = http.listen(8080, function() {
     console.log('listening on *:8080')
@@ -96,3 +99,9 @@ function removeUser(arr, value) {
     }
     return arr;
   }
+
+  function sendHeartbeat(){
+    setTimeout(sendHeartbeat, 100000);
+    io.sockets.emit('ping', { beat : 1 });
+    console.log('pinged to keep active. beat')
+}

@@ -8,7 +8,7 @@
 	width: 50px;
 	margin: -25px 0 0 -25px;
 	border: 2px solid transparent;
-	border-top-color: #000000;
+	border-top-color: #5e5e5e7c;
 	border-radius: 50%;
 	-webkit-animation: spin7 1.5s ease infinite;
 			animation: spin7 1.5s ease infinite;
@@ -23,7 +23,7 @@
 	left: 7px;
 	border: 2px solid transparent;
 	border-radius: 50%;
-	border-top-color: #000000;
+	border-top-color: #5e5e5e7c;
 	-webkit-animation: spin7 3s linear infinite;
 			animation: spin7 3s linear infinite;
   }
@@ -37,7 +37,7 @@
 	left: 15px;
 	border: 2px solid transparent;
 	border-radius: 50%;
-	border-top-color: #000000;
+	border-top-color: #5e5e5e7c;
 	-webkit-animation: spin7 1.5s ease infinite;
 			animation: spin7 1.5s ease infinite;
   }
@@ -67,3 +67,23 @@
 	}
   }
   /** END of nest1 */
+
+  /* FADE IN  */
+
+.fade-in {
+animation: fadeIn ease 3s;
+}
+.fade-in-userlist {
+animation: fadeIn ease 2s;
+}
+.fade-out {
+animation: fadeOut ease 0.5s;
+}
+@keyframes fadeIn {
+0% {opacity:0;}
+100% {opacity:1;}
+}
+@keyframes fadeOut {
+100% {opacity:0;}
+0% {opacity:1;}
+}

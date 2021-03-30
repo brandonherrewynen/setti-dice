@@ -7,8 +7,8 @@
     <meta name="theme-color" content="#f3de68" >
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="/css/site.css">
     <link rel="stylesheet" type="text/css" href="/css/loader.css">
+    <link rel="stylesheet" type="text/css" href="/css/site.css">
     <link rel="icon" href="/images/favicon.ico">
   </head>
   <body>
@@ -17,18 +17,20 @@
             <div class="content">
                 <section> 
                     <div id="nest1"></div>
-                    <img id="catloader" src="/images/favicon2.ico" height="256px" width="256px" class="image6"/> 
+                    <div class="fade-in">
+                        <img id="catloader" src="/images/favicon2.ico" height="256px" width="256px" class="image6"/> 
+                    </div>
                 </section>
             </div>
         </div>
         <div class="chatcontainer">
-            <div id="nest1"></div>
-            <div class="userlistbox">
+            <!-- <div id="nest1"></div> -->
+            <div class="userlistbox fade-in-userlist">
                 <h3>/userlist/</h3>
                 <ul id="userlist"></ul>
             </div>
-            <div id="chatwrapper">
-                <ul id="messages"></ul>
+            <div id="chatwrapper" class="fade-in">
+                <ul id="messages" class="fade-in"></ul>
                 <form action="/" method="POST" id="chatForm">
                     <input id="txt" autocomplete="off" autofocus="on" oninput="isTyping()" /><button class="">Send</button>
                 </form>
@@ -39,23 +41,14 @@
     <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script>
 
-        var socket = io({ timeout: 20000,auth: {token: "123"}, query: {"my-key": "my-value"} })
+        var socket = io({ timeout: 100000,auth: {token: "123"}, query: {"my-key": "my-value"} })
         var username = "guest"
         var guestCount = 0
         var re = /[a-zA-Z0-9~!@#$%^&*()`\[\]{};':,./<>?| ]*/
         var title = 'setti - live'
-
-        // Wait for window load
-        $(document).ready(function() {
-            $('#catloader').css('display','none')
-            $('#messages').css('display','none')
-            $('#loader').fadeOut(100)
-            $('#catloader').fadeIn(1000)
-            $('#messages').fadeIn(1000)
-            $('#loader').css('display','none')
-
-        })
-
+        socket.timeout = 100000
+        const delay = ms => new Promise(res => setTimeout(res, ms))
+        
         $('form').submit(function(e){
             let temp = $('#txt').val()
             if (re.test(temp) == true) {
@@ -81,13 +74,14 @@
             } else {
                 $('#messages').append($('<li class="consolemessages">').html("regex failed"))
             }
-            
         })
+
         socket.on('connect', function () {
             inputPlaceholder(username)
-            socket.emit('refreshMessages', socket.id)
             socket.emit('userlist')
+            socket.emit('refreshMessages', socket.id)
         })
+
         socket.on('userlistCall', function(userlist, guestCount) {
             $('#userlist').empty()
             if (guestCount > 0)
@@ -96,6 +90,7 @@
                 $('#userlist').append($('<li>').html(user))
             });
         })
+        
         // append the chat text message
         socket.on('chat_message', function(msg){ 
             $('#messages').append($('<li>').html(msg))
@@ -112,12 +107,18 @@
                 guestCount--
                 scroll()
         })
-        socket.on('load_previous_chat', (msg) => {
-            $('#messages').append($('<li>').html(msg))
+        socket.on('load_previous_chat', async (msg) => {
+            await $('#messages').append($('<li>').html(msg))
             scrollOnce()
         })
+        socket.on('ping', function(data){
+            socket.emit('pong', {beat: 1});
+        });
         socket.on('disconnect', (username) => {
             $('#userlist').remove($('<li>').html(username))
+        })
+        socket.on('scroll', function() {
+            scroll()
         })
         function scrollOnce(){
             scrollOnce = function(){}; // kill it as soon as it was called
