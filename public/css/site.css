@@ -54,6 +54,8 @@ ul {
     text-align:left;
     background-color: rgb(224, 223, 223);
     position: fixed;
+    bottom: 0px;
+    top: 0px;
     height: 100%;
     right: 0;
 } 
