@@ -24,13 +24,13 @@
             </div>
         </div>
         <div class="chatcontainer">
-            <!-- <div id="nest1"></div> -->
+            <div id="nest1"></div>
             <div class="userlistbox fade-in-userlist">
                 <h3>/userlist/</h3>
                 <ul id="userlist"></ul>
             </div>
-            <div id="chatwrapper" class="fade-in">
-                <ul id="messages" class="fade-in"></ul>
+            <div id="chatwrapper" style="opacity:0">
+                <ul id="messages"></ul>
                 <form action="/" method="POST" id="chatForm">
                     <input id="txt" autocomplete="off" autofocus="on" oninput="isTyping()" /><button class="">Send</button>
                 </form>
@@ -110,6 +110,9 @@
         socket.on('load_previous_chat', async (msg) => {
             await $('#messages').append($('<li>').html(msg))
             scrollOnce()
+            await $('#chatwrapper').animate({opacity: 1}, 750);
+            // $('#messages').animate({opacity: 1}, 750);
+            // $('#chatwrapper').slideToggle(700)
         })
         socket.on('ping', function(data){
             socket.emit('pong', {beat: 1});
