@@ -9,6 +9,7 @@ const mongo = require('./database')
 var pastMessages = []
 var isOnline = []
 var guestCount = 0
+var guest = "guest"
 
 app.use(express.static(path.join(__dirname, '/public')))
 
@@ -17,9 +18,12 @@ app.get('/', function(req, res) {
 })
 
 io.sockets.on('connection', function(socket) {
-    for ( i in pastMessages ) {
-        io.emit('load_previous_chat', '<strong>' + pastMessages[i]['username'] + '</strong>: ' + pastMessages[i]['message'])
-    }
+    console.log('connection')
+    console.log("socketid = " + socket.socketID)
+    console.log("socketid = " + socket.ID)
+    socket.on('refreshMessages', function(socketID) {
+        pullChat(socketID)
+    })
     socket.on('username', function(username) {
         socket.username = username;
         if (username == "guest") {}
@@ -47,11 +51,12 @@ io.sockets.on('connection', function(socket) {
             removeUser(isOnline, socket.username)
         }
         io.emit('userlistCall', isOnline, guestCount)
+        
     })
 
     socket.on('chat_message', function(message) { 
         mongo.logMessage(socket.username, message)
-        pullChat()
+        // pullChat()
         io.emit('chat_message', '<strong>' + socket.username + '</strong>: ' + message)
         //io.emit('chat_message', dice.DiceRound())
     })
@@ -64,22 +69,24 @@ io.sockets.on('connection', function(socket) {
 
 const server = http.listen(8080, function() {
     console.log('listening on *:8080')
-    pullChat()
 })
 
-function pullChat () {
-    mongo.pullPersistentChat().then(function(items) {
-        console.info('promise was fulfilled with items!')
-        pastMessages = []
-        for ( i in items ) {
-            pastMessages.push(items[i])
-            }
-            console.log(pastMessages.length + " messages pulled from localstorage.")
-        })
-        .catch(function(err) {
-        console.error('promise was rejected')
-        console.error(err)
+async function pullChat (socketID) {
+    await mongo.pullPersistentChat().then(function(items) {
+    pastMessages = []
+    for ( i in items ) {
+        pastMessages.push(items[i])
+        }
+        console.log(pastMessages.length + " messages pulled from localstorage.")
     })
+    .catch(function(err) {
+    console.error('promise was rejected')
+    console.error(err)
+    })
+    for ( i in pastMessages ) {
+        io.to(socketID).emit('load_previous_chat',
+        '<strong>' + pastMessages[i]['username'] + '</strong>: ' + pastMessages[i]['message'])
+    }
 }
 
 function removeUser(arr, value) {

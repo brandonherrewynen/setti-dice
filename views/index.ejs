@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="js">
   <head>
     <title>setti - live</title>
     <meta content="width=device-width, initial-scale=1" name="viewport" />
@@ -8,109 +8,132 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/css/site.css">
+    <link rel="stylesheet" type="text/css" href="/css/loader.css">
     <link rel="icon" href="/images/favicon.ico">
   </head>
   <body>
-    <div>
+    <div class="sitewrapper" visibility="hidden">
         <div class="gamecontainer">
             <div class="content">
-                <section> <img src="/images/favicon2.ico" height="256px" width="256px"
-                    class="image6" /> </section>
-              </div>
+                <section> 
+                    <div id="nest1"></div>
+                    <img id="catloader" src="/images/favicon2.ico" height="256px" width="256px" class="image6"/> 
+                </section>
+            </div>
         </div>
         <div class="chatcontainer">
+            <div id="nest1"></div>
             <div class="userlistbox">
                 <h3>/userlist/</h3>
                 <ul id="userlist"></ul>
             </div>
-            <ul id="messages"></ul>
-            <form action="/" method="POST" id="chatForm">
-                <input id="txt" autocomplete="off" autofocus="on" oninput="isTyping()" /><button class="">Send</button>
-            </form>
+            <div id="chatwrapper">
+                <ul id="messages"></ul>
+                <form action="/" method="POST" id="chatForm">
+                    <input id="txt" autocomplete="off" autofocus="on" oninput="isTyping()" /><button class="">Send</button>
+                </form>
+            </div>
         </div>
     </div>
-        <script src="../../socket.io/socket.io.js"></script>
-        <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
-        <script>
+    <script src="../../socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script>
 
-            var socket = io.connect()
-            var username = "guest"
-            var guestCount = 0
-            var re = /[a-zA-Z0-9~!@#$%^&*()`\[\]{};':,./<>?| ]*/
+        var socket = io({ timeout: 20000,auth: {token: "123"}, query: {"my-key": "my-value"} })
+        var username = "guest"
+        var guestCount = 0
+        var re = /[a-zA-Z0-9~!@#$%^&*()`\[\]{};':,./<>?| ]*/
+        var title = 'setti - live'
 
-            function truncate(str, n){
-                return (str.length > n) ? str.substr(0, n-1) + '&hellip;' : str;
-            };
+        // Wait for window load
+        $(document).ready(function() {
+            $('#catloader').css('display','none')
+            $('#messages').css('display','none')
+            $('#loader').fadeOut(100)
+            $('#catloader').fadeIn(1000)
+            $('#messages').fadeIn(1000)
+            $('#loader').css('display','none')
 
-            $('form').submit(function(e){
-                let temp = $('#txt').val()
-                if (re.test(temp) == true) {
-                    $('#txt').val('')
-                    if (username == "guest") {
-                        if (temp.length > 14) {
-                            $('#messages').append($('<li class="consolemessages">').html("keep username < 14"))
-                            scroll()
-                        }
-                        else if (temp == "") {
-                        } else {
-                            username = truncate(temp, 20)
-                            socket.emit('username', username)
-                        }
-                        return false
-                    } 
-                    if (temp.length > 140) {
-                        $('#messages').append($('<li class="consolemessages">').html("keep messages shorter"))
+        })
+
+        $('form').submit(function(e){
+            let temp = $('#txt').val()
+            if (re.test(temp) == true) {
+                $('#txt').val('')
+                if (username == "guest") {
+                    if (temp.length > 14) {
+                        $('#messages').append($('<li class="consolemessages">').html("keep username < 14"))
+                        scroll()
+                    }
+                    else if (temp == "") {
                     } else {
-                        socket.emit('chat_message', temp)
+                        username = truncate(temp, 20)
+                        socket.emit('username', username)
                     }
                     return false
+                } 
+                if (temp.length > 140) {
+                    $('#messages').append($('<li class="consolemessages">').html("keep messages < 140"))
                 } else {
-                    $('#messages').append($('<li class="consolemessages">').html("regex failed"))
+                    socket.emit('chat_message', temp)
                 }
-                
-            })
-            socket.on('connect', function () {
-                if (username == "guest") {
-                    $('#txt').attr("placeholder", 'type username...')
-                } else {
-                    $('#txt').attr("placeholder", "type your message here...")
-                }
-                socket.emit('userlist')
-            })
-            socket.on('userlistCall', function(userlist, guestCount) {
-                $('#userlist').empty()
-                if (guestCount > 0)
-                    $('#userlist').append($('<li>').html(`guests: ${guestCount}`))
-                userlist.forEach(user => {
-                    $('#userlist').append($('<li>').html(user))
-                });
-            })
-            // append the chat text message
-            socket.on('chat_message', function(msg){ 
-                $('#messages').append($('<li>').html(msg))
-                $("#messages").animate({ scrollTop: 200000 })
-            })
-            // append text if someone is online
-            socket.on('is_online', function(usernameOnline, username, guestTrack) { 
-                $('#messages').append($('<li>').html(usernameOnline))
-                if (guestTrack == true) 
-                    guestCount++
-                else
-                    guestCount--
-                $("#messages").animate({ scrollTop: 200000 })
-            })
-            socket.on('load_previous_chat', (msg) => {
-                $('#messages').append($('<li>').html(msg))
-                scrollOnce()
-            })
-            socket.on('disconnect', (username) => {
-                $('#userlist').remove($('<li>').html(username))
-            })
-            function scrollOnce(){
-                scrollOnce = function(){}; // kill it as soon as it was called
-                $("#messages").animate({ scrollTop: 200000 })
+                return false
+            } else {
+                $('#messages').append($('<li class="consolemessages">').html("regex failed"))
             }
-            function scroll(){$("#messages").animate({ scrollTop: 200000 })}
-        </script>
+            
+        })
+        socket.on('connect', function () {
+            inputPlaceholder(username)
+            socket.emit('refreshMessages', socket.id)
+            socket.emit('userlist')
+        })
+        socket.on('userlistCall', function(userlist, guestCount) {
+            $('#userlist').empty()
+            if (guestCount > 0)
+                $('#userlist').append($('<li>').html(`guests: ${guestCount}`))
+            userlist.forEach(user => {
+                $('#userlist').append($('<li>').html(user))
+            });
+        })
+        // append the chat text message
+        socket.on('chat_message', function(msg){ 
+            $('#messages').append($('<li>').html(msg))
+            $("#messages").animate({ scrollTop: 200000 })
+        })
+        // append text if someone is online
+        socket.on('is_online', function(usernameOnline, username, guestTrack) { 
+            inputPlaceholder(username)
+            $('#messages').append($('<li>').html(usernameOnline))
+            $(document).prop('title', title + ' - ' + username);
+            if (guestTrack == true) 
+                guestCount++
+            else
+                guestCount--
+                scroll()
+        })
+        socket.on('load_previous_chat', (msg) => {
+            $('#messages').append($('<li>').html(msg))
+            scrollOnce()
+        })
+        socket.on('disconnect', (username) => {
+            $('#userlist').remove($('<li>').html(username))
+        })
+        function scrollOnce(){
+            scrollOnce = function(){}; // kill it as soon as it was called
+            $("#messages").animate({ scrollTop: 200000 })
+        }
+        function scroll(){$("#messages").animate({ scrollTop: 200000 })}
+        function truncate(str, n){
+            return (str.length > n) ? str.substr(0, n-1) + '&hellip;' : str;
+        }
+        function inputPlaceholder(username) {
+            if (username == "guest" || username == "undefined") {
+                $('#txt').attr("placeholder", 'type username...')
+            } else {
+                $('#txt').attr("placeholder", "type your message here...")
+            }
+        }
+    </script>
   </body>
 </html>

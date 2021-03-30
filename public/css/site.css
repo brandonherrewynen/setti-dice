@@ -4,7 +4,7 @@
     padding: 0; 
     /* box-sizing: border-box;  */
 }
-html {height: 100%}
+html {height: 100%; background-color: rgb(224, 223, 223);}
 body { 
     height: 100%;
     font: 14px Helvetica, Arial; 
@@ -53,11 +53,11 @@ ul {
 .chatcontainer {
     text-align:left;
     background-color: rgb(224, 223, 223);
-    position: fixed;
-    bottom: 0px;
-    top: 0px;
-    height: 100%;
+    position: absolute;
+    width: 252px;
+    height: 100vh;
     right: 0;
+    z-index: 99999;
 } 
 
 .content {
@@ -94,7 +94,7 @@ ul {
 
 .userlistbox {
     position: fixed;
-    right: 0px;
+    right: 0;
     /* width: 74px; */
     /* height: 68px; */
     display: flex;
@@ -119,20 +119,36 @@ ul {
     background-color: rgba(255, 255, 255, 0);
 }
 
+#chatwrapper {
+    position: fixed;
+    right: 0;
+    bottom: calc(0px + 42px);
+    max-height: calc(100% - 42px);
+    display: flex;
+    flex: content;
+    flex-grow: 1;
+    flex-direction: column;
+}
+
 #messages { 
     width:252px;
-    position: relative;
+    position: static;
     list-style-type: none; 
-    height: calc(100vh - 42px);
+    height: calc(100% - 42px);
+    /* max-height: 200px; */
     padding: 0; 
     overflow: auto;
     overflow-x: hidden;
-}
+    bottom: 0;
+} 
+
 
 #messages li { 
-    padding: 5px 10px; 
+    /* position: absolute; */
     display: block;
-    top: 0px;
+    padding: 5px 10px; 
+    bottom: 0;
+    /* left: 0; right: 0; */
 }
 
 .consolemessages {
@@ -181,6 +197,8 @@ ul {
         #chatform { width: 362px;}
         form input {  width: 260px; }
         form button { width: 70px; }
+        .chatcontainer { width: 362px; }
+
     }
     @media only screen and (min-width: 1200px) {
         .gamecontainer {width:77%;}
