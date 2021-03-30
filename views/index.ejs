@@ -1,52 +1,88 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>setti</title>
+    <title>setti - live</title>
     <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <script src="../../socket.io/socket.io.js"></script>
-    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/css/site.css">
     <link rel="icon" href="/images/favicon.ico">
   </head>
   <body>
+    <div>
         <div class="gamecontainer">
             <div class="content">
-                <section> <img src="/images/favicon.ico" height="256px" width="256px"
+                <section> <img src="/images/favicon2.ico" height="256px" width="256px"
                     class="image6" /> </section>
               </div>
         </div>
         <div class="chatcontainer">
+            <div class="userlistbox">
+                <h3>/userlist/</h3>
+                <ul id="userlist"></ul>
+            </div>
             <ul id="messages"></ul>
             <form action="/" method="POST" id="chatForm">
                 <input id="txt" autocomplete="off" autofocus="on" oninput="isTyping()" placeholder="type your message here..." /><button class="">Send</button>
             </form>
         </div>
+    </div>
+        <script src="../../socket.io/socket.io.js"></script>
+        <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
         <script>
-                var socket = io.connect();
-                var username = "notassigned";
-                // submit text message without reload/refresh the page
-                $('form').submit(function(e){
-                    e.preventDefault(); // prevents page reloading
-                    if (username == "notassigned") {
-                        username = $('#txt').val();
-                        $('#txt').val('');
-                        socket.emit('username', username);
-                    } else if ($('#txt').val() == "") {
-                    } else {
-                        socket.emit('chat_message', $('#txt').val());
-                        $('#txt').val('');
-                    }
-                    return false;
+
+            var socket = io.connect()
+            var username = "guest"
+            var guestCount = 0
+
+            $('form').submit(function(e){
+                if (username == "guest") {
+                    username = $('#txt').val()
+                    $('#txt').val('')
+                    socket.emit('username', username)
+                } else if ($('#txt').val() == "") {
+                } else {
+                    socket.emit('chat_message', $('#txt').val())
+                    $('#txt').val('')
+                }
+                return false
+            })
+            socket.on('connect', function () {
+                socket.emit('userlist')
+            })
+            socket.on('userlistCall', function(userlist, guestCount) {
+                $('#userlist').empty()
+                if (guestCount > 0)
+                    $('#userlist').append($('<li>').html(`guests: ${guestCount}`))
+                userlist.forEach(user => {
+                    $('#userlist').append($('<li>').html(user))
                 });
-                // append the chat text message
-                socket.on('chat_message', function(msg){ 
-                  $('#messages').append($('<li>').html(msg)); 
-                  $("html, body").animate({ scrollTop: 200000 });
-                });
-                // append text if someone is online
-                socket.on('is_online', function(username) { $('#messages').append($('<li>').html(username)); });
+            })
+            // append the chat text message
+            socket.on('chat_message', function(msg){ 
+                $('#messages').append($('<li>').html(msg))
+                $("#messages").animate({ scrollTop: 200000 })
+            })
+            // append text if someone is online
+            socket.on('is_online', function(usernameOnline, username, guestTrack) { 
+                $('#messages').append($('<li>').html(usernameOnline))
+                if (guestTrack == true) 
+                    guestCount++
+                else
+                    guestCount--
+                $("#messages").animate({ scrollTop: 200000 })
+            })
+            socket.on('load_previous_chat', (msg) => {
+                $('#messages').append($('<li>').html(msg))
+                scroll()
+            })
+            socket.on('disconnect', (username) => {
+                $('#userlist').remove($('<li>').html(username))
+            })
+            function scroll(){
+                scroll = function(){}; // kill it as soon as it was called
+                $("#messages").animate({ scrollTop: 200000 })
+            }
         </script>
   </body>
 </html>
