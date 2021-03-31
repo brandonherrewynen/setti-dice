@@ -42,6 +42,49 @@
 			animation: spin7 1.5s ease infinite;
   }
   
+#nest2 {
+	display: block;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	height: 50px;
+	width: 50px;
+	margin: -25px 0 0 -25px;
+	border: 2px solid transparent;
+	border-top-color: #5e5e5e7c;
+	border-radius: 50%;
+	-webkit-animation: spin7 1.5s ease infinite;
+			animation: spin7 1.5s ease infinite;
+  }
+  
+  #nest2:before {
+	content: "";
+	position: absolute;
+	top: 7px;
+	right: 7px;
+	bottom: 7px;
+	left: 7px;
+	border: 2px solid transparent;
+	border-radius: 50%;
+	border-top-color: #5e5e5e7c;
+	-webkit-animation: spin7 3s linear infinite;
+			animation: spin7 3s linear infinite;
+  }
+  
+  #nest2:after {
+	content: "";
+	position: absolute;
+	top: 15px;
+	right: 15px;
+	bottom: 15px;
+	left: 15px;
+	border: 2px solid transparent;
+	border-radius: 50%;
+	border-top-color: #5e5e5e7c;
+	-webkit-animation: spin7 1.5s ease infinite;
+			animation: spin7 1.5s ease infinite;
+  }
+  
   @-webkit-keyframes spin7 {
 	from {
 	  -webkit-transform: rotate(0deg);
@@ -71,13 +114,13 @@
   /* FADE IN  */
 
 .fade-in {
-animation: fadeIn ease 3s;
+animation: fadeIn ease 2.5s;
 }
 .fade-in-userlist {
 animation: fadeIn ease 2s;
 }
 .fade-out {
-animation: fadeOut ease 0.5s;
+	animation: fadeOut ease 0.5s;
 }
 @keyframes fadeIn {
 0% {opacity:0;}

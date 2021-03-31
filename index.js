@@ -9,7 +9,6 @@ const mongo = require('./database')
 var pastMessages = []
 var isOnline = []
 var guestCount = 0
-var guest = "guest"
 
 app.use(express.static(path.join(__dirname, '/public')))
 
