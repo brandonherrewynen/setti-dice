@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "createDB": "run-func database.js createDB"
+    "createDB": "run-func database.js createDB",
+    "devstart": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,7 @@
     "jquery": "^3.6.0",
     "mongodb": "^3.6.5",
     "run-func": "^1.0.5",
+    "sanitize-html": "^2.3.3",
     "socket.io": "^4.0.0"
   },
   "devDependencies": {
