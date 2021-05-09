@@ -1,4 +1,5 @@
 const express = require('express')
+const sanitizeHtml = require('sanitize-html');
 const app = express()
 const http = require('http').Server(app)
 const io = require('socket.io')(http)
@@ -25,6 +26,7 @@ io.sockets.on('connection', function(socket) {
         pullChat(socketID)
     })
     socket.on('username', function(username) {
+        username = sanitizeHtml(username, {allowedTags: []});
         socket.username = username;
         if (username == "guest") {}
         else {
@@ -55,7 +57,8 @@ io.sockets.on('connection', function(socket) {
         
     })
 
-    socket.on('chat_message', function(message) { 
+    socket.on('chat_message', function(message) {
+        message = sanitizeHtml(message, {allowedTags:[]});
         mongo.logMessage(socket.username, message)
         io.emit('chat_message', '<strong>' + socket.username + '</strong>: ' + message)
         //io.emit('chat_message', dice.DiceRound())
